@@ -3,11 +3,10 @@ export default function AlertsPanel({ alerts }) {
     return (
       <aside className="sidebar">
         <div className="sidebar__header">
-          <h2 className="sidebar__title">🔔 Emergency Alerts</h2>
+          <h2 className="sidebar__title">Alerts</h2>
         </div>
         <div className="sidebar__content">
           <div className="empty-state">
-            <div className="empty-state__icon">📋</div>
             <div className="empty-state__text">No active alerts</div>
           </div>
         </div>
@@ -32,10 +31,8 @@ export default function AlertsPanel({ alerts }) {
     <aside className="sidebar">
       <div className="sidebar__header">
         <h2 className="sidebar__title">
-          🔔 Emergency Alerts
-          <span className="alert-count__number" style={{ marginLeft: '8px' }}>
-            {alerts.length}
-          </span>
+          Alerts
+          <span className="alert-count__number">{alerts.length}</span>
         </h2>
       </div>
       <div className="sidebar__content">
@@ -44,7 +41,6 @@ export default function AlertsPanel({ alerts }) {
             key={alert.id || index}
             className={`alert-item alert-item--${alert.severity}`}
             id={`alert-${alert.id || index}`}
-            style={{ animationDelay: `${index * 0.08}s` }}
           >
             <div className="alert-item__header">
               <span className="alert-item__title">{alert.title}</span>
