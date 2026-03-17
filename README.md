@@ -25,19 +25,19 @@ The platform provides a centralized dashboard that visualizes disaster zones on 
 
 ```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────────┐
-│   Frontend   │────▶│   Backend    │────▶│   PostgreSQL    │
-│  React+Vite  │     │   FastAPI    │     │    + PostGIS    │
-│  Leaflet.js  │     │   JWT Auth   │     │                 │
+│   Frontend  │───▶│   Backend    │────▶│   PostgreSQL   │
+│  React+Vite │     │   FastAPI   │     │    + PostGIS    │
+│  Leaflet.js │     │   JWT Auth  │     │                 │
 └─────────────┘     └─────────────┘     └─────────────────┘
        │                    │
        └────────┬───────────┘
                 │
     ┌───────────▼───────────┐
-    │   Docker / Kubernetes  │
-    │   Jenkins CI/CD        │
-    │   Terraform (AWS)      │
-    │   Ansible              │
-    │   Prometheus + Grafana │
+    │   Docker / Kubernetes │
+    │   Jenkins CI/CD       │
+    │   Terraform (AWS)     │
+    │   Ansible             │
+    │   Prometheus + Grafana│
     └───────────────────────┘
 ```
 

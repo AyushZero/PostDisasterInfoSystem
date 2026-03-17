@@ -29,7 +29,7 @@ def zone_to_response(zone: Zone) -> dict:
 
 @router.get("", response_model=list[DisasterListResponse])
 def list_disasters(
-    status: str = None,
+    status: str | None = None,
     db: Session = Depends(get_db),
 ):
     """List all disasters, optionally filtered by status."""

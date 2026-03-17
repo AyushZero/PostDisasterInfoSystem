@@ -56,7 +56,7 @@ async def get_current_admin(
 ) -> AdminUser:
     """Dependency to get the current authenticated admin user."""
     payload = decode_access_token(credentials.credentials)
-    username: str = payload.get("sub")
+    username: Optional[str] = payload.get("sub")
     if username is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
