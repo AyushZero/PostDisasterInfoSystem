@@ -1,0 +1,102 @@
+version: "3.9"
+
+services:
+  # ─── PostgreSQL + PostGIS ──────────────────────────────────
+  postgres:
+    image: postgis/postgis:15-3.4
+    container_name: disaster-db
+    environment:
+      POSTGRES_DB: disaster_platform
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - disaster-network
+
+  # ─── Backend API ───────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: disaster-backend
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/disaster_platform
+      JWT_SECRET_KEY: docker-compose-secret-key-change-me
+      CORS_ORIGINS: '["http://localhost:5173","http://localhost:80","http://localhost"]'
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - disaster-network
+    restart: unless-stopped
+
+  # ─── Frontend Dashboard ────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: disaster-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - disaster-network
+    restart: unless-stopped
+
+  # ─── Prometheus ────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.49.1
+    container_name: disaster-prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/alert-rules.yml:/etc/prometheus/alert-rules.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=15d"
+    networks:
+      - disaster-network
+    restart: unless-stopped
+
+  # ─── Grafana ───────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:10.3.1
+    container_name: disaster-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/disaster-platform.json
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - disaster-network
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  disaster-network:
+    driver: bridge

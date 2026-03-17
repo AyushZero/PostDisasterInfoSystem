@@ -1,0 +1,110 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  AWS_REGION: ap-south-1
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install frontend dependencies & build
+        run: |
+          cd frontend
+          npm install
+          npm run build
+
+  build-and-push:
+    name: Build & Push Docker Images
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build & push backend image
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+        run: |
+          cd backend
+          docker build -t $ECR_REGISTRY/disaster-backend:${{ github.sha }} \
+                       -t $ECR_REGISTRY/disaster-backend:latest .
+          docker push $ECR_REGISTRY/disaster-backend:${{ github.sha }}
+          docker push $ECR_REGISTRY/disaster-backend:latest
+
+      - name: Build & push frontend image
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+        run: |
+          cd frontend
+          docker build -t $ECR_REGISTRY/disaster-frontend:${{ github.sha }} \
+                       -t $ECR_REGISTRY/disaster-frontend:latest .
+          docker push $ECR_REGISTRY/disaster-frontend:${{ github.sha }}
+          docker push $ECR_REGISTRY/disaster-frontend:latest
+
+  deploy:
+    name: Deploy to Kubernetes
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name disaster-platform-cluster --region ${{ env.AWS_REGION }}
+
+      - name: Deploy to EKS
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+        run: |
+          kubectl set image deployment/backend \
+            backend=$ECR_REGISTRY/disaster-backend:${{ github.sha }} \
+            -n disaster-platform
+          kubectl set image deployment/frontend \
+            frontend=$ECR_REGISTRY/disaster-frontend:${{ github.sha }} \
+            -n disaster-platform
+          kubectl rollout status deployment/backend -n disaster-platform --timeout=120s
+          kubectl rollout status deployment/frontend -n disaster-platform --timeout=120s
