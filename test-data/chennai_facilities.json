@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Kanchipuram Relief Camp",
+    "facility_type": "shelter",
+    "latitude": 12.8385,
+    "longitude": 79.7000,
+    "address": "Government Higher Secondary School, Kanchipuram",
+    "contact": "+91-44-2722-3100",
+    "capacity": 600
+  },
+  {
+    "name": "Kanchipuram Government Hospital",
+    "facility_type": "hospital",
+    "latitude": 12.8310,
+    "longitude": 79.7120,
+    "address": "Gandhi Road, Kanchipuram",
+    "contact": "+91-44-2722-2034",
+    "capacity": 300
+  },
+  {
+    "name": "Sriperumbudur Community Shelter",
+    "facility_type": "shelter",
+    "latitude": 12.9585,
+    "longitude": 79.9410,
+    "address": "Town Hall Complex, Sriperumbudur",
+    "contact": "+91-44-2716-3200",
+    "capacity": 400
+  },
+  {
+    "name": "Chromepet Government Hospital",
+    "facility_type": "hospital",
+    "latitude": 12.9516,
+    "longitude": 80.1413,
+    "address": "GST Road, Chromepet, Chennai",
+    "contact": "+91-44-2265-0678",
+    "capacity": 500
+  },
+  {
+    "name": "Tambaram Evacuation Center",
+    "facility_type": "evacuation",
+    "latitude": 12.9249,
+    "longitude": 80.1000,
+    "address": "Railway Station Road, Tambaram",
+    "contact": "+91-44-2223-9200",
+    "capacity": 1200
+  },
+  {
+    "name": "Kanchipuram Evacuation Point",
+    "facility_type": "evacuation",
+    "latitude": 12.8450,
+    "longitude": 79.7250,
+    "address": "NH 4 Junction, Kanchipuram Outskirts",
+    "contact": "+91-44-2722-4500",
+    "capacity": 800
+  },
+  {
+    "name": "Missing Persons Center — Kanchipuram",
+    "facility_type": "missing_persons",
+    "latitude": 12.8360,
+    "longitude": 79.7060,
+    "address": "District Collectorate, Kanchipuram",
+    "contact": "+91-44-2722-5000",
+    "capacity": 40
+  },
+  {
+    "name": "Chengalpattu District Hospital",
+    "facility_type": "hospital",
+    "latitude": 12.6921,
+    "longitude": 79.9759,
+    "address": "NH 45, Chengalpattu",
+    "contact": "+91-44-2742-2100",
+    "capacity": 250
+  }
+]

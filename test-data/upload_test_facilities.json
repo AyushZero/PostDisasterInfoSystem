@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Puri Cyclone Relief Center",
+    "facility_type": "shelter",
+    "latitude": 19.8135,
+    "longitude": 85.8312,
+    "address": "Municipal Stadium, Grand Road, Puri",
+    "contact": "+91-6752-222100",
+    "capacity": 800
+  },
+  {
+    "name": "SCB Medical College Hospital",
+    "facility_type": "hospital",
+    "latitude": 20.4735,
+    "longitude": 85.8830,
+    "address": "Mangalabag, Cuttack",
+    "contact": "+91-671-2414080",
+    "capacity": 450
+  },
+  {
+    "name": "Konark Evacuation Point",
+    "facility_type": "evacuation",
+    "latitude": 19.8876,
+    "longitude": 86.0945,
+    "address": "NH 316 Junction, Konark",
+    "contact": "+91-6758-236700",
+    "capacity": 1500
+  },
+  {
+    "name": "Bhubaneswar AIIMS Shelter",
+    "facility_type": "shelter",
+    "latitude": 20.2961,
+    "longitude": 85.8245,
+    "address": "AIIMS Campus, Bhubaneswar",
+    "contact": "+91-674-2476789",
+    "capacity": 350
+  },
+  {
+    "name": "Chilika Lake Rescue Base",
+    "facility_type": "evacuation",
+    "latitude": 19.7200,
+    "longitude": 85.3200,
+    "address": "Balugaon Jetty, Chilika",
+    "contact": "+91-6756-220300",
+    "capacity": 600
+  }
+]

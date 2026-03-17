@@ -40,75 +40,68 @@ export default function Dashboard() {
       } catch (err) {
         console.error('Backend unavailable, loading demo data');
 
-        // Realistic irregular zone shapes — not boxes, not concentric
-        // Epicenter near Bhuj, zones fan out along fault lines and geography
+        // Chennai earthquake — epicenter Kanchipuram, zones along geography
         setDisaster({
           id: 1,
-          name: 'Gujarat Earthquake 2025',
+          name: 'Chennai Earthquake 2025',
           disaster_type: 'earthquake',
-          magnitude: 7.2,
-          affected_region: 'Kutch, Gujarat',
+          magnitude: 6.8,
+          affected_region: 'Kanchipuram, Tamil Nadu',
           status: 'active',
-          description: 'Major earthquake in the Kutch region.',
-          latitude: 23.2420,
-          longitude: 69.6669,
+          description: '6.8 magnitude earthquake near Kanchipuram, 70km SW of Chennai.',
+          latitude: 12.8342,
+          longitude: 79.7036,
           updated_at: new Date().toISOString(),
           zones: [
             {
               severity: 'extreme',
-              label: 'Epicenter — Bhuj',
-              population_affected: 45000,
-              geometry: {
-                type: 'Polygon',
-                coordinates: [[[69.62, 23.22], [69.64, 23.20], [69.68, 23.19], [69.72, 23.21], [69.73, 23.24], [69.71, 23.27], [69.67, 23.28], [69.63, 23.26], [69.62, 23.22]]],
-              },
+              label: 'Epicenter — Kanchipuram',
+              population_affected: 38000,
+              geometry: { type: 'Polygon', coordinates: [[[79.66,12.81],[79.68,12.79],[79.72,12.78],[79.75,12.80],[79.76,12.84],[79.74,12.87],[79.70,12.88],[79.67,12.86],[79.66,12.81]]] },
             },
             {
               severity: 'high',
-              label: 'Severe Damage — Anjar corridor',
-              population_affected: 78000,
-              geometry: {
-                type: 'Polygon',
-                coordinates: [[[69.73, 23.21], [69.80, 23.16], [69.92, 23.12], [70.00, 23.14], [70.02, 23.20], [69.95, 23.26], [69.82, 23.28], [69.73, 23.27], [69.73, 23.21]]],
-              },
+              label: 'Severe — Sriperumbudur corridor',
+              population_affected: 95000,
+              geometry: { type: 'Polygon', coordinates: [[[79.74,12.87],[79.78,12.85],[79.88,12.90],[79.95,12.95],[79.92,12.98],[79.84,12.96],[79.76,12.92],[79.74,12.87]]] },
             },
             {
               severity: 'moderate',
-              label: 'Moderate — Gandhidham area',
-              population_affected: 120000,
-              geometry: {
-                type: 'Polygon',
-                coordinates: [[[70.00, 23.14], [70.08, 23.08], [70.18, 23.06], [70.22, 23.10], [70.20, 23.18], [70.12, 23.22], [70.02, 23.20], [70.00, 23.14]]],
-              },
+              label: 'Moderate — South Chennai',
+              population_affected: 210000,
+              geometry: { type: 'Polygon', coordinates: [[[79.92,12.98],[79.98,12.93],[80.06,12.94],[80.10,12.98],[80.08,13.04],[80.02,13.06],[79.95,13.02],[79.92,12.98]]] },
             },
             {
               severity: 'low',
-              label: 'Minor Damage — Mandvi coast',
-              population_affected: 55000,
-              geometry: {
-                type: 'Polygon',
-                coordinates: [[[69.30, 23.02], [69.42, 22.96], [69.56, 22.98], [69.60, 23.06], [69.55, 23.14], [69.40, 23.16], [69.32, 23.10], [69.30, 23.02]]],
-              },
+              label: 'Minor — North Chennai',
+              population_affected: 450000,
+              geometry: { type: 'Polygon', coordinates: [[[80.08,13.04],[80.14,13.00],[80.22,13.02],[80.28,13.08],[80.26,13.14],[80.18,13.16],[80.10,13.12],[80.08,13.04]]] },
+            },
+            {
+              severity: 'low',
+              label: 'Minor — Vellore direction',
+              population_affected: 60000,
+              geometry: { type: 'Polygon', coordinates: [[[79.58,12.86],[79.66,12.81],[79.67,12.86],[79.64,12.94],[79.56,12.96],[79.52,12.92],[79.54,12.88],[79.58,12.86]]] },
             },
           ],
         });
 
         setFacilities([
-          { id: 1, name: 'Bhuj Relief Camp', facility_type: 'shelter', latitude: 23.2533, longitude: 69.6692, address: 'Jubilee Ground, Bhuj', contact: '+91-2832-250100', capacity: 500, current_occupancy: 342 },
-          { id: 2, name: 'G.K. General Hospital', facility_type: 'hospital', latitude: 23.2420, longitude: 69.6520, address: 'Hospital Road, Bhuj', contact: '+91-2832-220034', capacity: 200, current_occupancy: 187 },
-          { id: 3, name: 'Anjar Community Shelter', facility_type: 'shelter', latitude: 23.1140, longitude: 70.0245, address: 'Government School, Anjar', contact: '+91-2836-243200', capacity: 300, current_occupancy: 215 },
-          { id: 4, name: 'Gandhidham Civil Hospital', facility_type: 'hospital', latitude: 23.0753, longitude: 70.1337, address: 'Sector 1, Gandhidham', contact: '+91-2836-220678', capacity: 350, current_occupancy: 290 },
-          { id: 5, name: 'Evacuation Point A', facility_type: 'evacuation', latitude: 23.2610, longitude: 69.6750, address: 'NH 8A, Bhuj', contact: '+91-2832-250200', capacity: 1000, current_occupancy: 450 },
-          { id: 6, name: 'Missing Persons Center', facility_type: 'missing_persons', latitude: 23.2490, longitude: 69.6600, address: 'Collectorate, Bhuj', contact: '+91-2832-250300', capacity: 50, current_occupancy: 12 },
+          { id: 1, name: 'Kanchipuram Relief Camp', facility_type: 'shelter', latitude: 12.8385, longitude: 79.7000, address: 'Govt School, Kanchipuram', contact: '+91-44-2722-3100', capacity: 600, current_occupancy: 412 },
+          { id: 2, name: 'Kanchipuram Govt Hospital', facility_type: 'hospital', latitude: 12.8310, longitude: 79.7120, address: 'Gandhi Road, Kanchipuram', contact: '+91-44-2722-2034', capacity: 300, current_occupancy: 267 },
+          { id: 3, name: 'Sriperumbudur Shelter', facility_type: 'shelter', latitude: 12.9585, longitude: 79.9410, address: 'Town Hall, Sriperumbudur', contact: '+91-44-2716-3200', capacity: 400, current_occupancy: 285 },
+          { id: 4, name: 'Chromepet Govt Hospital', facility_type: 'hospital', latitude: 12.9516, longitude: 80.1413, address: 'GST Road, Chromepet', contact: '+91-44-2265-0678', capacity: 500, current_occupancy: 380 },
+          { id: 5, name: 'Tambaram Evacuation Center', facility_type: 'evacuation', latitude: 12.9249, longitude: 80.1000, address: 'Railway Rd, Tambaram', contact: '+91-44-2223-9200', capacity: 1200, current_occupancy: 560 },
+          { id: 6, name: 'Missing Persons — Kanchipuram', facility_type: 'missing_persons', latitude: 12.8360, longitude: 79.7060, address: 'Collectorate, Kanchipuram', contact: '+91-44-2722-5000', capacity: 40, current_occupancy: 18 },
         ]);
 
         setAlerts([
-          { id: 1, title: 'Earthquake: 7.2 Magnitude', message: 'Major earthquake in Kutch region. Move to evacuation points.', severity: 'critical', created_at: new Date(Date.now() - 3600000).toISOString() },
-          { id: 2, title: 'Evacuation Order — Bhuj', message: 'Mandatory evacuation within 5km of epicenter.', severity: 'critical', created_at: new Date(Date.now() - 7200000).toISOString() },
-          { id: 3, title: 'Aftershock Warning', message: 'Strong aftershocks expected. Stay away from buildings.', severity: 'warning', created_at: new Date(Date.now() - 10800000).toISOString() },
-          { id: 4, title: 'Relief Distribution', message: 'Supplies at Bhuj Relief Camp and Anjar Shelter.', severity: 'info', created_at: new Date(Date.now() - 14400000).toISOString() },
-          { id: 5, title: 'Road Closure — NH8A', message: 'Partially closed between Bhuj and Anjar.', severity: 'warning', created_at: new Date(Date.now() - 18000000).toISOString() },
-          { id: 6, title: 'Helpline Active', message: 'Emergency helpline 1070 is operational.', severity: 'info', created_at: new Date(Date.now() - 21600000).toISOString() },
+          { id: 1, title: 'Earthquake: 6.8 Magnitude — Kanchipuram', message: 'Evacuate affected zones immediately.', severity: 'critical', created_at: new Date(Date.now() - 3600000).toISOString() },
+          { id: 2, title: 'Evacuation Order — Kanchipuram', message: 'Mandatory evacuation within 10km of epicenter.', severity: 'critical', created_at: new Date(Date.now() - 7200000).toISOString() },
+          { id: 3, title: 'Aftershock Warning', message: 'Aftershocks expected in next 72 hours.', severity: 'warning', created_at: new Date(Date.now() - 10800000).toISOString() },
+          { id: 4, title: 'Metro / MRTS Suspended', message: 'Chennai Metro suspended for inspections.', severity: 'warning', created_at: new Date(Date.now() - 14400000).toISOString() },
+          { id: 5, title: 'Relief Distribution', message: 'Supplies at Kanchipuram, Sriperumbudur, Tambaram.', severity: 'info', created_at: new Date(Date.now() - 18000000).toISOString() },
+          { id: 6, title: 'Helpline 1070 Active', message: 'Report missing persons or request assistance.', severity: 'info', created_at: new Date(Date.now() - 21600000).toISOString() },
         ]);
       } finally {
         setLoading(false);

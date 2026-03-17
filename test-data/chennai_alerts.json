@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Earthquake: 6.8 Magnitude — Kanchipuram",
+    "message": "A 6.8 magnitude earthquake struck near Kanchipuram. All residents in affected zones should evacuate immediately.",
+    "severity": "critical"
+  },
+  {
+    "title": "Evacuation Order — Kanchipuram Town",
+    "message": "Mandatory evacuation for residents within 10km of epicenter. Report to nearest evacuation point.",
+    "severity": "critical"
+  },
+  {
+    "title": "Aftershock Warning — Next 72 Hours",
+    "message": "Significant aftershocks expected. Stay in open areas. Do not enter damaged structures.",
+    "severity": "warning"
+  },
+  {
+    "title": "MRTS / Metro Services Suspended",
+    "message": "Chennai Metro and MRTS services suspended for safety inspections. Use road transport.",
+    "severity": "warning"
+  },
+  {
+    "title": "Relief Distribution — Multiple Locations",
+    "message": "Food and water at Kanchipuram Relief Camp, Sriperumbudur Shelter, and Tambaram Evacuation Center.",
+    "severity": "info"
+  },
+  {
+    "title": "Emergency Helpline — 1070",
+    "message": "State disaster helpline active. Report missing persons, request rescue, or get medical assistance.",
+    "severity": "info"
+  }
+]

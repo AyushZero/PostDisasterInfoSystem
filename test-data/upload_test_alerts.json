@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Cyclone Vardah — Category 4 Landfall at Puri",
+    "message": "Cyclone Vardah made landfall near Puri with wind speeds of 185 km/h. All coastal areas under red alert.",
+    "severity": "critical"
+  },
+  {
+    "title": "Storm Surge Warning — Puri Coast",
+    "message": "Storm surge of 3-4 meters expected along Puri-Konark coastline. Move to higher ground immediately.",
+    "severity": "critical"
+  },
+  {
+    "title": "Heavy Rainfall — Cuttack and Bhubaneswar",
+    "message": "200mm+ rainfall expected in 24 hours. Flash flooding likely in low-lying areas.",
+    "severity": "warning"
+  },
+  {
+    "title": "Power Outage — Southern Odisha",
+    "message": "Power supply disrupted in Puri, Ganjam, and Khordha districts. Restoration after storm passes.",
+    "severity": "info"
+  }
+]

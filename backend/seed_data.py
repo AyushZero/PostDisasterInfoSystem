@@ -1,5 +1,6 @@
 """
-Seed script to populate the database with realistic sample disaster data.
+Seed script to populate the database with sample disaster data.
+Scenario: Earthquake centered at Kanchipuram, Tamil Nadu.
 Run: python seed_data.py
 """
 import sys
@@ -14,11 +15,10 @@ from app.auth import hash_password
 
 
 def seed_database():
-    """Populate database with sample data."""
+    """Populate database with Chennai earthquake sample data."""
     Base.metadata.create_all(bind=engine)
     db: Session = SessionLocal()
 
-    # Check if already seeded
     if db.query(Disaster).first():
         print("Database already seeded. Skipping.")
         db.close()
@@ -34,45 +34,57 @@ def seed_database():
     )
     db.add(admin)
 
-    # ─── Disaster: Gujarat Earthquake ────────────────────────
+    # ─── Disaster: Chennai Earthquake (Kanchipuram epicenter) ──
+    # Kanchipuram center: 12.8342, 79.7036
     disaster = Disaster(
-        name="Gujarat Earthquake 2025",
+        name="Chennai Earthquake 2025",
         disaster_type="earthquake",
-        magnitude=7.2,
-        affected_region="Gujarat, India",
+        magnitude=6.8,
+        affected_region="Kanchipuram, Tamil Nadu",
         status="active",
-        description="A major earthquake struck the Kutch region of Gujarat, causing widespread damage to infrastructure and displacing thousands of residents. Emergency services are actively responding.",
-        latitude=23.2420,
-        longitude=69.6669,
+        description="A 6.8 magnitude earthquake struck near Kanchipuram, approximately 70km southwest of Chennai. Severe damage in Kanchipuram town and surrounding villages. Shaking felt across Chennai metropolitan area.",
+        latitude=12.8342,
+        longitude=79.7036,
     )
     db.add(disaster)
     db.flush()
 
-    # ─── Severity Zones ─────────────────────────────────────
+    # ─── Severity Zones (irregular, following geography) ──────
     zones_data = [
         {
             "severity": "extreme",
-            "label": "Epicenter Zone - Bhuj",
-            "population_affected": 45000,
-            "wkt": "POLYGON((69.60 23.20, 69.75 23.20, 69.75 23.30, 69.60 23.30, 69.60 23.20))",
+            "label": "Epicenter — Kanchipuram",
+            "population_affected": 38000,
+            # Irregular polygon around Kanchipuram town center
+            "wkt": "POLYGON((79.66 12.81, 79.68 12.79, 79.72 12.78, 79.75 12.80, 79.76 12.84, 79.74 12.87, 79.70 12.88, 79.67 12.86, 79.66 12.81))",
         },
         {
             "severity": "high",
-            "label": "High Risk - Anjar Region",
-            "population_affected": 78000,
-            "wkt": "POLYGON((69.50 23.10, 69.85 23.10, 69.85 23.35, 69.50 23.35, 69.50 23.10))",
+            "label": "Severe — Sriperumbudur corridor",
+            "population_affected": 95000,
+            # Extends NE towards Sriperumbudur along NH
+            "wkt": "POLYGON((79.74 12.87, 79.78 12.85, 79.88 12.90, 79.95 12.95, 79.92 12.98, 79.84 12.96, 79.76 12.92, 79.74 12.87))",
         },
         {
             "severity": "moderate",
-            "label": "Moderate Risk - Gandhidham",
-            "population_affected": 120000,
-            "wkt": "POLYGON((69.35 23.00, 70.00 23.00, 70.00 23.45, 69.35 23.45, 69.35 23.00))",
+            "label": "Moderate — South Chennai",
+            "population_affected": 210000,
+            # Extends east towards Tambaram / Chromepet
+            "wkt": "POLYGON((79.92 12.98, 79.98 12.93, 80.06 12.94, 80.10 12.98, 80.08 13.04, 80.02 13.06, 79.95 13.02, 79.92 12.98))",
         },
         {
             "severity": "low",
-            "label": "Low Risk - Outer Region",
-            "population_affected": 250000,
-            "wkt": "POLYGON((69.15 22.80, 70.20 22.80, 70.20 23.60, 69.15 23.60, 69.15 22.80))",
+            "label": "Minor — North Chennai",
+            "population_affected": 450000,
+            # Wider Chennai area to the north
+            "wkt": "POLYGON((80.08 13.04, 80.14 13.00, 80.22 13.02, 80.28 13.08, 80.26 13.14, 80.18 13.16, 80.10 13.12, 80.08 13.04))",
+        },
+        {
+            "severity": "low",
+            "label": "Minor — Vellore direction",
+            "population_affected": 60000,
+            # Extends NW from epicenter
+            "wkt": "POLYGON((79.58 12.86, 79.66 12.81, 79.67 12.86, 79.64 12.94, 79.56 12.96, 79.52 12.92, 79.54 12.88, 79.58 12.86))",
         },
     ]
     for z in zones_data:
@@ -88,104 +100,104 @@ def seed_database():
     # ─── Facilities ──────────────────────────────────────────
     facilities_data = [
         {
-            "name": "Bhuj Relief Camp",
+            "name": "Kanchipuram Relief Camp",
             "facility_type": "shelter",
-            "latitude": 23.2533,
-            "longitude": 69.6692,
-            "address": "Near Jubilee Ground, Bhuj, Gujarat",
-            "contact": "+91-2832-250100",
-            "capacity": 500,
-            "current_occupancy": 342,
-        },
-        {
-            "name": "G.K. General Hospital",
-            "facility_type": "hospital",
-            "latitude": 23.2420,
-            "longitude": 69.6520,
-            "address": "Hospital Road, Bhuj, Gujarat",
-            "contact": "+91-2832-220034",
-            "capacity": 200,
-            "current_occupancy": 187,
-        },
-        {
-            "name": "Anjar Community Shelter",
-            "facility_type": "shelter",
-            "latitude": 23.1140,
-            "longitude": 70.0245,
-            "address": "Government School Complex, Anjar",
-            "contact": "+91-2836-243200",
-            "capacity": 300,
-            "current_occupancy": 215,
-        },
-        {
-            "name": "Gandhidham Civil Hospital",
-            "facility_type": "hospital",
-            "latitude": 23.0753,
-            "longitude": 70.1337,
-            "address": "Sector 1, Gandhidham, Gujarat",
-            "contact": "+91-2836-220678",
-            "capacity": 350,
-            "current_occupancy": 290,
-        },
-        {
-            "name": "Bhuj Evacuation Point A",
-            "facility_type": "evacuation",
-            "latitude": 23.2610,
-            "longitude": 69.6750,
-            "address": "National Highway 8A, Bhuj Outskirts",
-            "contact": "+91-2832-250200",
-            "capacity": 1000,
-            "current_occupancy": 450,
-        },
-        {
-            "name": "Madhapar Evacuation Center",
-            "facility_type": "evacuation",
-            "latitude": 23.2200,
-            "longitude": 69.7100,
-            "address": "Madhapar Village, Kutch District",
-            "contact": "+91-2832-287600",
+            "latitude": 12.8385,
+            "longitude": 79.7000,
+            "address": "Government Higher Secondary School, Kanchipuram",
+            "contact": "+91-44-2722-3100",
             "capacity": 600,
-            "current_occupancy": 180,
+            "current_occupancy": 412,
         },
         {
-            "name": "Missing Persons Center - Bhuj",
-            "facility_type": "missing_persons",
-            "latitude": 23.2490,
-            "longitude": 69.6600,
-            "address": "District Collectorate, Bhuj",
-            "contact": "+91-2832-250300",
-            "capacity": 50,
-            "current_occupancy": 12,
-        },
-        {
-            "name": "Kutch Medical Center",
+            "name": "Kanchipuram Government Hospital",
             "facility_type": "hospital",
-            "latitude": 23.2350,
-            "longitude": 69.6800,
-            "address": "Mirzapur Road, Bhuj, Gujarat",
-            "contact": "+91-2832-256789",
-            "capacity": 150,
-            "current_occupancy": 134,
+            "latitude": 12.8310,
+            "longitude": 79.7120,
+            "address": "Gandhi Road, Kanchipuram",
+            "contact": "+91-44-2722-2034",
+            "capacity": 300,
+            "current_occupancy": 267,
         },
         {
-            "name": "Rapar Relief Shelter",
+            "name": "Sriperumbudur Community Shelter",
             "facility_type": "shelter",
-            "latitude": 23.5726,
-            "longitude": 70.1110,
-            "address": "Government Warehouse, Rapar, Kutch",
-            "contact": "+91-2839-222100",
+            "latitude": 12.9585,
+            "longitude": 79.9410,
+            "address": "Town Hall Complex, Sriperumbudur",
+            "contact": "+91-44-2716-3200",
             "capacity": 400,
-            "current_occupancy": 278,
+            "current_occupancy": 285,
         },
         {
-            "name": "Bhachau Evacuation Hub",
+            "name": "Chromepet Government Hospital",
+            "facility_type": "hospital",
+            "latitude": 12.9516,
+            "longitude": 80.1413,
+            "address": "GST Road, Chromepet, Chennai",
+            "contact": "+91-44-2265-0678",
+            "capacity": 500,
+            "current_occupancy": 380,
+        },
+        {
+            "name": "Tambaram Evacuation Center",
             "facility_type": "evacuation",
-            "latitude": 23.2980,
-            "longitude": 70.3430,
-            "address": "Railway Station Road, Bhachau",
-            "contact": "+91-2837-222500",
+            "latitude": 12.9249,
+            "longitude": 80.1000,
+            "address": "Railway Station Road, Tambaram",
+            "contact": "+91-44-2223-9200",
+            "capacity": 1200,
+            "current_occupancy": 560,
+        },
+        {
+            "name": "Kanchipuram Evacuation Point",
+            "facility_type": "evacuation",
+            "latitude": 12.8450,
+            "longitude": 79.7250,
+            "address": "NH 4 Junction, Kanchipuram Outskirts",
+            "contact": "+91-44-2722-4500",
             "capacity": 800,
-            "current_occupancy": 320,
+            "current_occupancy": 310,
+        },
+        {
+            "name": "Missing Persons — Kanchipuram",
+            "facility_type": "missing_persons",
+            "latitude": 12.8360,
+            "longitude": 79.7060,
+            "address": "District Collectorate, Kanchipuram",
+            "contact": "+91-44-2722-5000",
+            "capacity": 40,
+            "current_occupancy": 18,
+        },
+        {
+            "name": "Chengalpattu District Hospital",
+            "facility_type": "hospital",
+            "latitude": 12.6921,
+            "longitude": 79.9759,
+            "address": "NH 45, Chengalpattu",
+            "contact": "+91-44-2742-2100",
+            "capacity": 250,
+            "current_occupancy": 198,
+        },
+        {
+            "name": "Anna Nagar Relief Shelter",
+            "facility_type": "shelter",
+            "latitude": 13.0850,
+            "longitude": 80.2101,
+            "address": "Anna Nagar Community Hall, Chennai",
+            "contact": "+91-44-2628-1000",
+            "capacity": 350,
+            "current_occupancy": 120,
+        },
+        {
+            "name": "Guindy Evacuation Hub",
+            "facility_type": "evacuation",
+            "latitude": 13.0067,
+            "longitude": 80.2206,
+            "address": "Guindy Industrial Estate, Chennai",
+            "contact": "+91-44-2234-5600",
+            "capacity": 900,
+            "current_occupancy": 240,
         },
     ]
     for f in facilities_data:
@@ -195,38 +207,38 @@ def seed_database():
     # ─── Alerts ──────────────────────────────────────────────
     alerts_data = [
         {
-            "title": "EARTHQUAKE ALERT: 7.2 Magnitude",
-            "message": "A major earthquake of magnitude 7.2 has struck the Kutch region. All residents in the affected zone are urged to move to designated evacuation points immediately.",
+            "title": "Earthquake: 6.8 Magnitude — Kanchipuram",
+            "message": "A 6.8 magnitude earthquake struck near Kanchipuram. All residents in affected zones should evacuate immediately.",
             "severity": "critical",
             "disaster_id": disaster.id,
         },
         {
-            "title": "Evacuation Order - Bhuj City",
-            "message": "Mandatory evacuation ordered for all residents within 5km of the epicenter. Report to nearest evacuation point with essential belongings only.",
+            "title": "Evacuation Order — Kanchipuram Town",
+            "message": "Mandatory evacuation for residents within 10km of epicenter. Report to nearest evacuation point.",
             "severity": "critical",
             "disaster_id": disaster.id,
         },
         {
-            "title": "Aftershock Warning",
-            "message": "Strong aftershocks expected in the next 48 hours. Stay away from damaged buildings and infrastructure. Keep emergency supplies ready.",
+            "title": "Aftershock Warning — Next 72 Hours",
+            "message": "Significant aftershocks expected. Stay in open areas. Do not enter damaged structures.",
             "severity": "warning",
             "disaster_id": disaster.id,
         },
         {
-            "title": "Relief Supplies Distribution",
-            "message": "Food, water, and medical supplies being distributed at Bhuj Relief Camp and Anjar Community Shelter. Bring identification documents if available.",
+            "title": "MRTS / Metro Services Suspended",
+            "message": "Chennai Metro and MRTS services suspended for safety inspections. Use road transport.",
+            "severity": "warning",
+            "disaster_id": disaster.id,
+        },
+        {
+            "title": "Relief Distribution — Multiple Locations",
+            "message": "Food and water at Kanchipuram Relief Camp, Sriperumbudur Shelter, and Tambaram Evacuation Center.",
             "severity": "info",
             "disaster_id": disaster.id,
         },
         {
-            "title": "Road Closures - NH8A",
-            "message": "National Highway 8A is partially closed between Bhuj and Anjar due to structural damage. Use alternative routes via Gandhidham.",
-            "severity": "warning",
-            "disaster_id": disaster.id,
-        },
-        {
-            "title": "Emergency Helpline Active",
-            "message": "Disaster management helpline is active at 1070. Report missing persons, request medical assistance, or get evacuation guidance.",
+            "title": "Emergency Helpline — 1070",
+            "message": "State disaster helpline active. Report missing persons, request rescue, or get medical assistance.",
             "severity": "info",
             "disaster_id": disaster.id,
         },
@@ -238,8 +250,8 @@ def seed_database():
     db.commit()
     db.close()
     print("Database seeded successfully!")
-    print("  Admin credentials: admin / admin123")
-    print(f"  Disaster: Gujarat Earthquake 2025")
+    print("  Admin: admin / admin123")
+    print(f"  Disaster: Chennai Earthquake 2025 (Kanchipuram epicenter)")
     print(f"  Zones: {len(zones_data)}")
     print(f"  Facilities: {len(facilities_data)}")
     print(f"  Alerts: {len(alerts_data)}")
