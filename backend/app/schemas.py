@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 
@@ -32,8 +32,8 @@ class DisasterBase(BaseModel):
     affected_region: str
     status: str = "active"
     description: Optional[str] = None
-    latitude: float
-    longitude: float
+    latitude: float = Field(..., ge=-90.0, le=90.0)
+    longitude: float = Field(..., ge=-180.0, le=180.0)
 
 
 class DisasterCreate(DisasterBase):
@@ -64,8 +64,8 @@ class DisasterListResponse(DisasterBase):
 class FacilityBase(BaseModel):
     name: str
     facility_type: str
-    latitude: float
-    longitude: float
+    latitude: float = Field(..., ge=-90.0, le=90.0)
+    longitude: float = Field(..., ge=-180.0, le=180.0)
     address: Optional[str] = None
     contact: Optional[str] = None
     capacity: Optional[int] = None

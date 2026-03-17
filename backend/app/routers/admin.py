@@ -1,6 +1,8 @@
 import json
 import csv
 import io
+import ijson
+import io
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
 from sqlalchemy.orm import Session
 from geoalchemy2.elements import WKTElement
@@ -189,39 +191,57 @@ async def upload_facilities(
     db: Session = Depends(get_db),
     admin: AdminUser = Depends(get_current_admin),
 ):
-    """Upload facilities data via CSV or JSON file."""
-    content = await file.read()
-    content_str = content.decode("utf-8")
-    records = []
+    """Upload facilities data via CSV or JSON file incrementally."""
+    records_created = 0
 
     if file.filename.endswith(".json"):
-        data = json.loads(content_str)
-        if isinstance(data, dict):
-            data = data.get("facilities", [data])
-        for item in data:
-            facility = Facility(**item)
-            db.add(facility)
-            records.append(facility)
+        # Use ijson to parse the JSON file iteratively
+        try:
+            # We assume the structure is either a list of facilities OR an object with a "facilities" key
+            objects = ijson.items(file.file, 'facilities.item')
+            # If the wrapper doesn't exist, we fall back to streaming the top-level list
+            has_items = False
+            for item in objects:
+                has_items = True
+                facility = Facility(**item)
+                db.add(facility)
+                records_created += 1
+            
+            if not has_items:
+                # Seek back to start and try parsing as a top-level list
+                file.file.seek(0)
+                objects = ijson.items(file.file, 'item')
+                for item in objects:
+                    facility = Facility(**item)
+                    db.add(facility)
+                    records_created += 1
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Invalid JSON format: {str(e)}")
 
     elif file.filename.endswith(".csv"):
-        reader = csv.DictReader(io.StringIO(content_str))
-        for row in reader:
-            facility = Facility(
-                name=row["name"],
-                facility_type=row["facility_type"],
-                latitude=float(row["latitude"]),
-                longitude=float(row["longitude"]),
-                address=row.get("address"),
-                contact=row.get("contact"),
-                capacity=int(row["capacity"]) if row.get("capacity") else None,
-            )
-            db.add(facility)
-            records.append(facility)
+        # Stream the CSV line by line
+        try:
+            wrapper = io.TextIOWrapper(file.file, encoding='utf-8')
+            reader = csv.DictReader(wrapper)
+            for row in reader:
+                facility = Facility(
+                    name=row["name"],
+                    facility_type=row["facility_type"],
+                    latitude=float(row["latitude"]),
+                    longitude=float(row["longitude"]),
+                    address=row.get("address"),
+                    contact=row.get("contact"),
+                    capacity=int(row["capacity"]) if row.get("capacity") else None,
+                )
+                db.add(facility)
+                records_created += 1
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Invalid CSV format: {str(e)}")
     else:
         raise HTTPException(status_code=400, detail="Only CSV and JSON files are supported")
 
     db.commit()
-    return {"message": "Facilities uploaded successfully", "records_created": len(records)}
+    return {"message": "Facilities uploaded successfully", "records_created": records_created}
 
 
 @router.post("/upload/alerts", response_model=UploadResponse)
@@ -230,17 +250,30 @@ async def upload_alerts(
     db: Session = Depends(get_db),
     admin: AdminUser = Depends(get_current_admin),
 ):
-    """Upload alerts data via JSON file."""
-    content = await file.read()
-    data = json.loads(content.decode("utf-8"))
-    if isinstance(data, dict):
-        data = data.get("alerts", [data])
+    """Upload alerts data via JSON file incrementally."""
+    records_created = 0
+    if not file.filename.endswith(".json"):
+        raise HTTPException(status_code=400, detail="Only JSON files are supported for alerts")
 
-    records = []
-    for item in data:
-        alert = Alert(**item)
-        db.add(alert)
-        records.append(alert)
+    try:
+        objects = ijson.items(file.file, 'alerts.item')
+        has_items = False
+        for item in objects:
+            has_items = True
+            alert = Alert(**item)
+            db.add(alert)
+            records_created += 1
+            
+        if not has_items:
+            file.file.seek(0)
+            objects = ijson.items(file.file, 'item')
+            for item in objects:
+                alert = Alert(**item)
+                db.add(alert)
+                records_created += 1
+                
+    except Exception as e:
+         raise HTTPException(status_code=400, detail=f"Invalid JSON format: {str(e)}")
 
     db.commit()
-    return {"message": "Alerts uploaded successfully", "records_created": len(records)}
+    return {"message": "Alerts uploaded successfully", "records_created": records_created}

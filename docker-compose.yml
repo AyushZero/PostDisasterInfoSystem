@@ -6,9 +6,9 @@ services:
     image: postgis/postgis:15-3.4
     container_name: disaster-db
     environment:
-      POSTGRES_DB: disaster_platform
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-disaster_platform}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_secure_password}
     ports:
       - "5432:5432"
     volumes:
@@ -28,8 +28,8 @@ services:
       dockerfile: Dockerfile
     container_name: disaster-backend
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/disaster_platform
-      JWT_SECRET_KEY: docker-compose-secret-key-change-me
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres_secure_password}@postgres:5432/${POSTGRES_DB:-disaster_platform}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-default_insecure_secret}
       CORS_ORIGINS: '["http://localhost:5173","http://localhost:80","http://localhost"]'
     ports:
       - "8000:8000"
@@ -77,8 +77,8 @@ services:
     image: grafana/grafana:10.3.1
     container_name: disaster-grafana
     environment:
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin_secure}
       GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/disaster-platform.json
     volumes:
       - grafana_data:/var/lib/grafana

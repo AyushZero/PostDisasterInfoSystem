@@ -1,0 +1,53 @@
+===============================================
+  POST-DISASTER PLATFORM — QUICK REFERENCE
+===============================================
+
+--- START ---
+docker-compose up -d --build
+
+--- SEED DATABASE ---
+docker exec disaster-backend python seed_data.py
+
+--- STOP ---
+docker-compose down
+
+--- STOP + DELETE ALL DATA ---
+docker-compose down -v
+
+--- CHECK STATUS ---
+docker ps
+
+--- VIEW LOGS ---
+docker logs disaster-backend
+docker logs disaster-frontend
+docker logs disaster-db
+
+--- REBUILD AFTER CODE CHANGES ---
+docker-compose up -d --build
+
+===============================================
+  LINKS
+===============================================
+
+Dashboard:    http://localhost
+Admin Panel:  http://localhost/admin
+Backend API:  http://localhost:8000/api/health
+Grafana:      http://localhost:3001
+Prometheus:   http://localhost:9090
+
+===============================================
+  CREDENTIALS
+===============================================
+
+Admin Login:  admin / admin123
+Grafana:      admin / admin
+
+===============================================
+  FRONTEND ONLY (no Docker needed)
+===============================================
+
+cd frontend
+npm run dev
+
+Opens at:     http://localhost:5173
+(runs in demo mode if backend is not running)
